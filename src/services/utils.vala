@@ -56,7 +56,8 @@ namespace Topbar {
         );
       }
 
-      return ((string) stdout_bytes.get_data ()).strip ();
+      var data = stdout_bytes.get_data ();
+      return (data == null) ? null : ((string) data).strip ();
     }
 
     public static void run_script_async (string[] argv) {
