@@ -147,14 +147,18 @@ namespace Topbar {
   // -------------------- Main ----------------------------
   public class NiriWorkspaces : Box {
 
-    private string output;
+    private Gdk.Monitor monitor;
     private NiriIPC niri;
 
     public NiriWorkspaces (Gdk.Monitor monitor) {
       Object (orientation: Orientation.HORIZONTAL, spacing: 4);
       set_css_classes ({ "bar-section" });
 
-      output = monitor.get_connector ();
+      // Keep the monitor reference and read its connector live rather than
+      // snapshotting it. On hotplug the Gdk.Monitor can be handed over before
+      // its connector name is populated; a snapshot taken then would stay
+      // empty forever and never match any Niri workspace output.
+      this.monitor = monitor;
 
       try {
         niri = NiriIPC.get_default ();
@@ -163,15 +167,26 @@ namespace Topbar {
         niri.windows_changed.connect (on_windows_changed);
         niri.window_closed.connect (on_window_closed);
 
+        // Re-seed once the connector becomes available (see note above).
+        monitor.notify["connector"].connect (on_workspaces_changed);
+
         destroy.connect (() => {
           niri.workspaces_changed.disconnect (on_workspaces_changed);
+          niri.workspace_focus_changed.disconnect (on_workspace_focus_changed);
           niri.windows_changed.disconnect (on_windows_changed);
+          niri.window_closed.disconnect (on_window_closed);
+          monitor.notify["connector"].disconnect (on_workspaces_changed);
         });
 
         // Add Long Press gesture
         var gesture = new GestureLongPress ();
         gesture.pressed.connect (() => niri.toggle_overview ());
         add_controller (gesture);
+
+        // Seed from cached IPC state. On display reconnect this widget is
+        // created after Niri has already sent its initial event dump, so no
+        // signal will fire to populate it — build from the cache directly.
+        on_workspaces_changed ();
       } catch (Error e) {
         critical ("Failed to init Niri IPC: %s", e.message);
       }
@@ -180,6 +195,10 @@ namespace Topbar {
     private void on_workspaces_changed () {
       // Get workspaces
       var ws_li = new ArrayList<NiriWorkspace> ();
+
+      // Read the connector live; may be null briefly right after hotplug.
+      var output = monitor.get_connector ();
+      if (output == null)return;
 
       // Filter by output
       foreach (var niri_ws in niri.niri_workspaces.values)
