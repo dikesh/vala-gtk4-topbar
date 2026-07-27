@@ -27,6 +27,7 @@ A lightweight, feature-rich status bar for the [Niri](https://github.com/YaLTeR/
   - Left-click to toggle mute
   - Scroll to adjust volume
 - **Wi-Fi** — Shows connected SSID and signal icon.
+  - Click to open the NetworkManager text UI (`nmtui`)
 - **Battery** — Shows charge percentage and charging status icon.
 - **System Tray** — SNI (StatusNotifierItem) tray icon support.
 - **Power Menu** — Button to open the power menu.

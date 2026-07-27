@@ -8,11 +8,18 @@ namespace Topbar {
     private static DateTimeService ? instance = null;
 
     private bool show_utc = false;
-    private DateTime datetime;
     private string date;
+    private string time;
 
     public signal void date_updated (string date);
     public signal void time_updated (string time);
+
+    public string current_date { get {
+                                   return date;
+                                 } }
+    public string current_time { get {
+                                   return time;
+                                 } }
 
     public static DateTimeService get_default () {
       if (instance == null)instance = new DateTimeService ();
@@ -20,25 +27,28 @@ namespace Topbar {
     }
 
     private DateTimeService () {
+      update ();
+
       Timeout.add_seconds (1, () => {
-        // Datetime
-        var curr_datetime = show_utc ? new DateTime.now_utc () : new DateTime.now_local ();
-        if (datetime == curr_datetime)return true;
-
-        // Time changed
-        datetime = curr_datetime;
-        time_updated (curr_datetime.format ("%T"));
-
-        // Check for date
-        var curr_date = curr_datetime.format ("%a %d %b %Y");
-
-        if (date != curr_date) {
-          date = curr_date;
-          date_updated (date);
-        }
-
+        update ();
         return true;
       });
+    }
+
+    private void update () {
+      var curr_datetime = show_utc ? new DateTime.now_utc () : new DateTime.now_local ();
+
+      // Time changes every tick
+      time = curr_datetime.format ("%T");
+      time_updated (time);
+
+      // Date only changes at midnight
+      var curr_date = curr_datetime.format ("%a %d %b %Y");
+
+      if (date != curr_date) {
+        date = curr_date;
+        date_updated (date);
+      }
     }
 
     public void toggle_show_utc () {
@@ -52,11 +62,12 @@ namespace Topbar {
     public TimeWidget () {
       Object (spacing: 8, tooltip_text: "Click to toggle between Local and UTC time");
 
-      var time_button = new Button.with_label ("00:00:00");
+      var dt_service = DateTimeService.get_default ();
+
+      var time_button = new Button.with_label (dt_service.current_time);
       append (new Image.from_icon_name ("preferences-system-time-symbolic"));
       append (time_button);
 
-      var dt_service = DateTimeService.get_default ();
       dt_service.time_updated.connect (time => time_button.set_label (time));
       time_button.clicked.connect (dt_service.toggle_show_utc);
     }
@@ -71,12 +82,13 @@ namespace Topbar {
       Object (spacing: 8, tooltip_text: "Click to show / hide calendar");
 
       // Add children
-      var date_button = new Button.with_label ("Thu 01 Jan 2026");
+      var dt_service = DateTimeService.get_default ();
+
+      var date_button = new Button.with_label (dt_service.current_date);
       append (new Image.from_icon_name ("x-office-calendar-symbolic"));
       append (date_button);
 
       // Update date button label
-      var dt_service = DateTimeService.get_default ();
       dt_service.date_updated.connect (date => date_button.set_label (date));
 
       // Show / Hide Popover

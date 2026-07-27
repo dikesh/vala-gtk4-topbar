@@ -6,7 +6,7 @@ namespace Topbar {
 
     private static string filename;
 
-    private bool is_recording = false;
+    public bool is_recording { get; private set; default = false; }
     public signal void recording_toggled (bool reccording);
 
     public static ScreenRecordService get_default () {
@@ -16,7 +16,7 @@ namespace Topbar {
     }
 
     private ScreenRecordService () {
-      recording_toggled.connect (is_recording => { this.is_recording = is_recording; });
+      recording_toggled.connect (recording => { this.is_recording = recording; });
     }
 
     private async void start_recording () {

@@ -33,11 +33,13 @@ namespace Topbar {
     public ScreenRec () {
       set_css_classes ({ "bar-section" });
       set_tooltip_text ("Screen Recorder");
-      var recording_icon = new Image.from_icon_name (icon_recording_off);
-      child = recording_icon;
-
       // Get recording service
       var rec_service = ScreenRecordService.get_default ();
+
+      // Seed from current state; recording_toggled only fires on change.
+      var recording_icon = new Image.from_icon_name (
+        rec_service.is_recording ? icon_recording_on : icon_recording_off);
+      child = recording_icon;
 
       // Toggle on click
       clicked.connect (rec_service.toggle_recording);

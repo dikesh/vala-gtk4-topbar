@@ -90,7 +90,7 @@ namespace Topbar {
     Label label;
 
     public Wifi () {
-      Object (spacing: 8);
+      Object (spacing: 8, tooltip_text: "Click to open NetworkManager TUI");
       set_css_classes ({ "bar-section", "network" });
 
       var wifi = WifiService.get_default ();
@@ -105,6 +105,10 @@ namespace Topbar {
         icon.icon_name = wifi.icon_name;
         label.label = wifi.ssid;
       });
+
+      var click_gesture = new GestureClick ();
+      click_gesture.pressed.connect (Utils.launch_wifi_menu);
+      add_controller (click_gesture);
     }
   }
 

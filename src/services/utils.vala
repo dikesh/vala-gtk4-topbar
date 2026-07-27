@@ -85,6 +85,10 @@ namespace Topbar {
       Utils.run_script_async ({ "kitty", "-e", "btop" });
     }
 
+    public static void launch_wifi_menu () {
+      Utils.run_script_async ({ "kitty", "-e", "nmtui" });
+    }
+
     public static void send_notification (string summary, string body) {
       // Create and show notification
       var notification = new Notification (summary);
