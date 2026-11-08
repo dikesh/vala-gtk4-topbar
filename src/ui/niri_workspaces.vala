@@ -19,6 +19,7 @@ namespace Topbar {
         append (new Image.from_resource ("/com/github/dikesh/topbar/kitty-custom.svg"));
       } else {
         if (icon_name == "org.gnome.nautilus")icon_name = "nautilus";
+        else if ("emacs" in icon_name)icon_name = "emacs";
         else if (!Utils.icon_exists (icon_name))icon_name = "application-x-executable";
 
         append (new Image.from_icon_name (icon_name));
