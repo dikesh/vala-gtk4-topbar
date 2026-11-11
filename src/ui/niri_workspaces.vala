@@ -35,7 +35,7 @@ namespace Topbar {
 
     public static WindowBox empty_window_box () {
       var ws_box = new WindowBox ();
-      ws_box.append (new Image.from_icon_name ("archlinux-logo"));
+      ws_box.set_size_request (16, 16);
       return ws_box;
     }
   }

@@ -7,7 +7,7 @@
     <file alias="icons/scalable/status/topbar-memory-symbolic.svg">icons/cpu.svg</file>
     <file alias="icons/scalable/status/topbar-temperature-symbolic.svg">icons/flame.svg</file>
     <file alias="icons/scalable/status/topbar-disk-symbolic.svg">icons/database.svg</file>
-    <file alias="icons/scalable/status/topbar-search-symbolic.svg">icons/search.svg</file>
+    <file alias="icons/scalable/status/topbar-apps-symbolic.svg">icons/apps.svg</file>
     <file alias="icons/scalable/status/topbar-tools-symbolic.svg">icons/tools.svg</file>
     <file alias="icons/scalable/status/topbar-color-picker-symbolic.svg">icons/color-picker.svg</file>
     <file alias="icons/scalable/status/topbar-record-desktop-indicator-symbolic.svg">icons/video-plus.svg</file>

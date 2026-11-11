@@ -8,7 +8,7 @@ namespace Topbar {
     public Apps () {
       Object (tooltip_text: "Apps Menu");
       set_css_classes ({ "bar-section", "apps" });
-      child = new Image.from_icon_name ("topbar-search-symbolic");
+      child = new Image.from_icon_name ("topbar-apps-symbolic");
       clicked.connect (Utils.launch_apps);
     }
   }

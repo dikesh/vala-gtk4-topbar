@@ -147,6 +147,7 @@ namespace Topbar {
         popover.insert_action_group ("dbusmenu", menu.action_group);
         popover.set_has_arrow (false);
         popover.set_position (PositionType.BOTTOM);
+        popover.set_offset (0, 12);
         popover.set_parent (button);
         popover.closed.connect (on_popover_closed);
         enable_menu_keyboard ();

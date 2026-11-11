@@ -54,7 +54,6 @@ $icon: $mauve;
     &.screenrec,
     &.apps {
       min-width: 16px;
-      color: $icon;
     }
   }
 
@@ -122,6 +121,11 @@ $icon: $mauve;
       font-size: 13px;
       font-weight: 400;
       letter-spacing: 0;
+    }
+
+    // Preserve an edge gap even when the compositor constrains the popup.
+    & > contents {
+      margin-right: 12px;
     }
 
     & > contents,
@@ -252,6 +256,7 @@ tooltip.background {
   border: 1px solid $surface1;
   border-radius: 4px;
   padding: 0;
+  margin-top: 8px;
   box-shadow: 0 3px 8px rgba($crust, 0.45);
 
   box {
