@@ -1,93 +1,120 @@
-$base: #24273a;
-$mantle: #1e2030;
-$crust: #181926;
-
-$text: #cad3f5;
-$subtext0: #a5adcb;
-$subtext1: #b8c0e0;
-
-$surface0: #363a4f;
-$surface1: #494d64;
-$surface2: #5b6078;
-
-$overlay0: #6e738d;
-$overlay1: #8087a2;
-$overlay2: #939ab7;
-
-$blue: #8aadf4;
-$lavender: #b7bdf8;
-$sapphire: #7dc4e4;
-$sky: #91d7e3;
-$teal: #8bd5ca;
-$green: #a6da95;
-$yellow: #eed49f;
-$peach: #f5a97f;
-$maroon: #ee99a0;
-$red: #ed8796;
-$mauve: #c6a0f6;
-$pink: #f5bde6;
-$flamingo: #f0c6c6;
-$rosewater: #f4dbd6;
+$base: #1e1e2e;
+$mantle: #181825;
+$crust: #11111b;
+$text: #cdd6f4;
+$surface0: #313244;
+$surface1: #45475a;
+$surface2: #585b70;
+$overlay0: #6c7086;
+$blue: #89b4fa;
+$mauve: #cba6f7;
+$cyan: #89dceb;
+$capsule-border: #51466a;
+$workspace-border: #4c4f69;
+$icon: #d1abfd;
 
 .bar-container {
+  background: transparent;
+  color: $text;
+
   * {
     all: unset;
     font-family: 'Hack Nerd Font Mono';
+    font-size: 14px;
+    font-weight: 500;
   }
 
-  margin: 0 8px 4px;
+  .bar-content {
+    margin: 4px 14px;
+
+    label {
+      letter-spacing: -0.4px;
+    }
+
+    image {
+      -gtk-icon-size: 16px;
+      min-width: 16px;
+      min-height: 16px;
+      color: $icon;
+    }
+
+    .hl-workspace image {
+      -gtk-icon-size: 15px;
+    }
+  }
 
   .bar-section {
     background: $surface0;
-    border-radius: 0px;
-    padding: 8px 12px;
+    border: 1px solid $capsule-border;
+    border-radius: 999px;
+    min-height: 24px;
+    padding: 0 7px;
 
-    image {
-      -gtk-icon-size: 14px;
-    }
-
-    // Padding
     &.power,
     &.screenrec,
     &.apps {
-      padding: 8px 11px;
-      label {
-        padding: 0 3px;
-      }
+      min-width: 16px;
+      color: $icon;
     }
+  }
 
-    &.power {
-      color: $peach;
-    }
+  button.bar-section:hover {
+    background: $surface1;
+    border-color: $mauve;
+  }
 
-    &.battery,
-    &.network,
-    &.volume,
-    &.bluetooth {
-      color: $blue;
-    }
+  button:active {
+    color: $mauve;
+  }
 
-    &.clock,
-    &.apps,
-    .system-resource-widget {
-      color: $text;
+  button:focus-visible {
+    outline: 1px solid $mauve;
+    outline-offset: -2px;
+  }
+
+  .system-resource-widget {
+    border-radius: 999px;
+
+    &:hover {
+      background: rgba($text, 0.1);
     }
   }
 
   .hl-workspace {
-    padding: 0 4px;
-    border-radius: 2px;
+    padding: 0 3px;
+    margin: 3px 0;
+    background: rgba($surface0, 0.18);
+    border: 1px solid $workspace-border;
+    border-radius: 999px;
   }
 
   .hl-workspace-active {
-    padding: 0 8px;
-    background: $sapphire;
-    box-shadow: 3px 3px 2px $crust;
+    padding: 0 5px;
+    background: $cyan;
+    border-color: $cyan;
+    border-radius: 3px;
+  }
+
+  .tray-item {
+    padding: 0 2px;
+
+    &:hover {
+      color: $icon;
+    }
+  }
+
+  popover > contents {
+    background: $base;
+    color: $text;
+    border: 1px solid $surface1;
+    border-radius: 8px;
+    padding: 6px;
+    box-shadow: 0 4px 12px rgba($crust, 0.5);
   }
 
   .traymenu modelbutton {
-    background: $mantle;
     padding: 8px;
+    border-radius: 4px;
 
     &:hover {
       background: $surface0;
@@ -95,45 +122,51 @@ $rosewater: #f4dbd6;
   }
 
   .calendar-container {
-    background: $surface0;
+    color: $text;
     padding: 10px;
 
     header {
-      background-color: $surface2;
-      color: $lavender;
+      color: $mauve;
       padding: 10px;
     }
 
     grid > .day-name {
       font-weight: bold;
-      color: $flamingo;
+      color: $mauve;
     }
 
     .day-number.today {
-      background-color: $surface1;
-      color: $lavender;
-      border-radius: 10%;
+      background: $surface1;
+      color: $mauve;
+      border-radius: 999px;
     }
 
     .day-number.other-month {
-      color: gray;
+      color: $overlay0;
     }
   }
-
 }
 
 tooltip.background {
-  all: unset;
-  background-color: transparent;
-  border: none;
+  background: $base;
+  color: $text;
+  border: 1px solid $surface1;
+  border-radius: 4px;
+  padding: 0;
+  box-shadow: 0 3px 8px rgba($crust, 0.45);
 
   box {
-    background-color: $base;
-    border-radius: 4px;
-    border: 1px solid $teal;
-    color: $sky;
-    padding: 8px;
-    margin: 4px;
+    padding: 8px 10px;
+  }
+
+  label {
+    color: $text;
+    font-family: 'Hack Nerd Font Mono';
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    padding: 0;
+    margin: 0;
   }
 }
 

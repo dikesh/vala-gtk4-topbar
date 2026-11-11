@@ -34,7 +34,6 @@ namespace Topbar {
       orientation = Orientation.HORIZONTAL;
 
       image = new Image ();
-      image.pixel_size = 16;
 
       button = new Button ();
       button.add_css_class ("tray-item");

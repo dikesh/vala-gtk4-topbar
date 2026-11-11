@@ -2,6 +2,12 @@
 
 A lightweight, feature-rich status bar for the [Niri](https://github.com/YaLTeR/niri) Wayland compositor, built with GTK4 and Vala.
 
+## Appearance
+
+Catppuccin Mocha colors with mauve accents, a cyan active-workspace highlight, rounded pills, and a transparent background.
+
+To customize the appearance, edit `assets/style.scss`, then rebuild and restart. Status icons are bundled; their license is in `assets/icons/LICENSE`.
+
 ## Features
 
 ### Left Section
@@ -16,7 +22,7 @@ A lightweight, feature-rich status bar for the [Niri](https://github.com/YaLTeR/
   - Long-press to toggle the Niri overview
 
 ### Center Section
-- **Clock** — Live time display (250ms refresh). Click to toggle between local and UTC time.
+- **Clock** — Live time display. Click to toggle between local and UTC time.
 - **Date** — Current date display. Click to open a calendar popover.
 
 ### Right Section
@@ -28,7 +34,7 @@ A lightweight, feature-rich status bar for the [Niri](https://github.com/YaLTeR/
   - Scroll to adjust volume
 - **Wi-Fi** — Shows connected SSID and signal icon.
   - Click to open the NetworkManager text UI (`nmtui`)
-- **Battery** — Shows charge percentage and charging status icon.
+- **Battery** — Shows charge percentage and charging, plugged-in, or discharging state.
 - **System Tray** — SNI (StatusNotifierItem) tray icon support.
 - **Power Menu** — Button to open the power menu.
 

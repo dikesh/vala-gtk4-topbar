@@ -3,5 +3,54 @@
   <gresource prefix="/com/github/dikesh/topbar">
     <file>style.css</file>
     <file>kitty-custom.svg</file>
+    <file>icons/LICENSE</file>
+    <file alias="icons/scalable/status/topbar-cpu-symbolic.svg">icons/brand-speedtest.svg</file>
+    <file alias="icons/scalable/status/topbar-memory-symbolic.svg">icons/cpu.svg</file>
+    <file alias="icons/scalable/status/topbar-temperature-symbolic.svg">icons/flame.svg</file>
+    <file alias="icons/scalable/status/topbar-disk-symbolic.svg">icons/database.svg</file>
+    <file alias="icons/scalable/status/topbar-search-symbolic.svg">icons/search.svg</file>
+    <file alias="icons/scalable/status/topbar-tools-symbolic.svg">icons/tools.svg</file>
+    <file alias="icons/scalable/status/topbar-color-picker-symbolic.svg">icons/color-picker.svg</file>
+    <file alias="icons/scalable/status/topbar-record-desktop-indicator-symbolic.svg">icons/video-plus.svg</file>
+    <file alias="icons/scalable/status/topbar-record-desktop-indicator-recording-symbolic.svg">icons/video-minus.svg</file>
+    <file alias="icons/scalable/status/topbar-system-shutdown-symbolic.svg">icons/power.svg</file>
+    <file alias="icons/scalable/status/topbar-bluetooth-disabled-symbolic.svg">icons/bluetooth-off.svg</file>
+    <file alias="icons/scalable/status/topbar-bluetooth-active-symbolic.svg">icons/bluetooth.svg</file>
+    <file alias="icons/scalable/status/topbar-bluetooth-connected-symbolic.svg">icons/bluetooth-connected.svg</file>
+    <file alias="icons/scalable/status/topbar-audio-volume-muted-symbolic.svg">icons/volume-off.svg</file>
+    <file alias="icons/scalable/status/topbar-audio-volume-low-symbolic.svg">icons/volume-2.svg</file>
+    <file alias="icons/scalable/status/topbar-audio-volume-medium-symbolic.svg">icons/volume.svg</file>
+    <file alias="icons/scalable/status/topbar-audio-volume-high-symbolic.svg">icons/volume.svg</file>
+    <file alias="icons/scalable/status/topbar-network-wireless-signal-excellent-symbolic.svg">icons/wifi.svg</file>
+    <file alias="icons/scalable/status/topbar-network-wireless-signal-good-symbolic.svg">icons/wifi-3.svg</file>
+    <file alias="icons/scalable/status/topbar-network-wireless-signal-ok-symbolic.svg">icons/wifi-2.svg</file>
+    <file alias="icons/scalable/status/topbar-network-wireless-signal-weak-symbolic.svg">icons/wifi-1.svg</file>
+    <file alias="icons/scalable/status/topbar-network-wireless-signal-none-symbolic.svg">icons/wifi-0.svg</file>
+    <file alias="icons/scalable/status/topbar-network-wireless-offline-symbolic.svg">icons/wifi-off.svg</file>
+    <file alias="icons/scalable/status/topbar-network-wireless-acquiring-symbolic.svg">icons/wifi-question.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-missing-symbolic.svg">icons/battery-exclamation.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-plugged-symbolic.svg">icons/battery-charging-2.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-0-symbolic.svg">icons/battery.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-0-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-10-symbolic.svg">icons/battery-1.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-10-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-20-symbolic.svg">icons/battery-1.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-20-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-30-symbolic.svg">icons/battery-2.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-30-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-40-symbolic.svg">icons/battery-2.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-40-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-50-symbolic.svg">icons/battery-2.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-50-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-60-symbolic.svg">icons/battery-3.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-60-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-70-symbolic.svg">icons/battery-3.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-70-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-80-symbolic.svg">icons/battery-3.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-80-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-90-symbolic.svg">icons/battery-4.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-90-charging-symbolic.svg">icons/battery-charging.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-100-symbolic.svg">icons/battery-4.svg</file>
+    <file alias="icons/scalable/status/topbar-battery-level-100-charging-symbolic.svg">icons/battery-charging.svg</file>
   </gresource>
 </gresources>

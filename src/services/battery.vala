@@ -7,8 +7,6 @@ namespace Topbar {
     public int percentage { get; private set; }
     public string battery_icon_name { get; private set; }
 
-    private bool charging;
-    private bool is_battery;
     public signal void updated ();
 
     private DBusProxy proxy;
@@ -60,10 +58,9 @@ namespace Topbar {
 
       double perc = proxy.get_cached_property ("Percentage").get_double () / 100.0;
 
-      charging = (state == 4) || (state == 1); // FULLY_CHARGED or CHARGING
-      is_battery = (type != 0) && (type != 1); // not UNKNOWN, not LINE_POWER
+      bool is_battery = (type != 0) && (type != 1); // not UNKNOWN, not LINE_POWER
 
-      var curr_battery_icon_name = get_icon_name (perc);
+      var curr_battery_icon_name = get_icon_name (state, is_battery, perc);
       var curr_percentage = (int) (perc * 100);
 
       if (curr_battery_icon_name != battery_icon_name || curr_percentage != percentage) {
@@ -73,13 +70,13 @@ namespace Topbar {
       }
     }
 
-    private string get_icon_name (double perc) {
-      // Missing / Charged battery
+    private static string get_icon_name (uint state, bool is_battery, double perc) {
       if (!is_battery)return "battery-missing-symbolic";
-      if (perc >= 0.95 && charging)return "battery-level-100-charged-symbolic";
 
-      // Icon Based on level
-      string charge = charging ? "-charging" : "";
+      // UPower: fully charged (4) or waiting to charge (5), e.g. at a charge limit.
+      if (state == 4 || state == 5)return "battery-plugged-symbolic";
+
+      string charge = state == 1 ? "-charging" : ""; // CHARGING
       int level = (int) Math.round (perc * 10) * 10;
       return @"battery-level-$level$charge-symbolic";
     }

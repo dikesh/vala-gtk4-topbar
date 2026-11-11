@@ -41,7 +41,7 @@ namespace Topbar {
     private HashSet<int> ws_window_ids;
 
     public WorkspaceBox (NiriWorkspace workspace, NiriIPC niri) {
-      Object (spacing: 8, visible: false);
+      Object (spacing: 4, visible: false);
       set_tooltip_text ("Left click to focus workspace\nScroll to switch between windows");
       set_css_classes ({ "hl-workspace" });
 
@@ -53,12 +53,14 @@ namespace Topbar {
       add_empty_window_box ();
       foreach (var niri_window in niri.niri_windows.values)add_window_box (niri_window);
 
-      // Watch for change in focus and active status
-      if (is_focused)update_css_classes ();
+      // Highlight each monitor's active workspace, even on an unfocused output.
+      update_css_classes ();
       update_visibility ();
 
-      notify["is-focused"].connect ((s, p) => update_css_classes ());
-      notify["is-active"].connect ((s, p) => update_visibility ());
+      notify["is-active"].connect (() => {
+        update_css_classes ();
+        update_visibility ();
+      });
 
       // Add click gesture
       var gesture = new GestureClick ();
@@ -79,8 +81,8 @@ namespace Topbar {
 
     private void update_css_classes () {
       const string class_to_update = "hl-workspace-active";
-      if (is_focused && (!has_css_class (class_to_update)))add_css_class (class_to_update);
-      else if (!is_focused && has_css_class (class_to_update))remove_css_class (class_to_update);
+      if (is_active && (!has_css_class (class_to_update)))add_css_class (class_to_update);
+      else if (!is_active && has_css_class (class_to_update))remove_css_class (class_to_update);
     }
 
     private void update_visibility () {
@@ -153,7 +155,7 @@ namespace Topbar {
 
     public NiriWorkspaces (Gdk.Monitor monitor) {
       Object (orientation: Orientation.HORIZONTAL, spacing: 4);
-      set_css_classes ({ "bar-section" });
+      set_css_classes ({ "bar-section", "workspaces" });
 
       // Keep the monitor reference and read its connector live rather than
       // snapshotting it. On hotplug the Gdk.Monitor can be handed over before

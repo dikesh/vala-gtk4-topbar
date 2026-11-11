@@ -65,7 +65,6 @@ namespace Topbar {
       var dt_service = DateTimeService.get_default ();
 
       var time_button = new Button.with_label (dt_service.current_time);
-      append (new Image.from_icon_name ("preferences-system-time-symbolic"));
       append (time_button);
 
       dt_service.time_updated.connect (time => time_button.set_label (time));
@@ -85,7 +84,6 @@ namespace Topbar {
       var dt_service = DateTimeService.get_default ();
 
       var date_button = new Button.with_label (dt_service.current_date);
-      append (new Image.from_icon_name ("x-office-calendar-symbolic"));
       append (date_button);
 
       // Update date button label

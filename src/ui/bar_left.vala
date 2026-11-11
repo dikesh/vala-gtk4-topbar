@@ -8,7 +8,7 @@ namespace Topbar {
     public Apps () {
       Object (tooltip_text: "Apps Menu");
       set_css_classes ({ "bar-section", "apps" });
-      child = new Label ("󰀻");
+      child = new Image.from_icon_name ("topbar-search-symbolic");
       clicked.connect (Utils.launch_apps);
     }
   }
@@ -19,7 +19,7 @@ namespace Topbar {
     public ColorPicker () {
       set_css_classes ({ "bar-section", "apps" });
       set_tooltip_text ("Color Picker");
-      child = new Label ("");
+      child = new Image.from_icon_name ("topbar-color-picker-symbolic");
       clicked.connect (Utils.launch_color_picker);
     }
   }
@@ -27,11 +27,11 @@ namespace Topbar {
   // -------------- Screen Recorder ----------------
   private class ScreenRec : Button {
 
-    const string icon_recording_on = "record-desktop-indicator-recording";
-    const string icon_recording_off = "record-desktop-indicator";
+    const string icon_recording_on = "topbar-record-desktop-indicator-recording-symbolic";
+    const string icon_recording_off = "topbar-record-desktop-indicator-symbolic";
 
     public ScreenRec () {
-      set_css_classes ({ "bar-section" });
+      set_css_classes ({ "bar-section", "screenrec" });
       set_tooltip_text ("Screen Recorder");
       // Get recording service
       var rec_service = ScreenRecordService.get_default ();
@@ -59,7 +59,7 @@ namespace Topbar {
       var btn = new Button () {
         css_classes = { "bar-section", "apps" }, tooltip_text = "Click to show / hide tools"
       };
-      btn.child = new Label ("");
+      btn.child = new Image.from_icon_name ("topbar-tools-symbolic");
 
       btn.clicked.connect (() => {
         if (revealer == null)set_revealer ();
@@ -95,7 +95,7 @@ namespace Topbar {
   public class BarLeft : Gtk.Box {
 
     public BarLeft (Gdk.Monitor monitor) {
-      Object (spacing: 8);
+      Object (spacing: 16);
       append (new SystemResources ());
       append (new Apps ());
       append (new Tools ());

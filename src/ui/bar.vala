@@ -18,7 +18,7 @@ namespace Topbar {
       GtkLayerShell.set_anchor (this, GtkLayerShell.Edge.RIGHT, true);
 
       // Height of bar in pixels
-      GtkLayerShell.set_exclusive_zone (this, 32);
+      GtkLayerShell.set_exclusive_zone (this, 34);
 
       // Optional: avoid focus stealing
       GtkLayerShell.set_keyboard_mode (this, GtkLayerShell.KeyboardMode.NONE);
@@ -26,6 +26,7 @@ namespace Topbar {
 
       // Center box
       var cb = new CenterBox ();
+      cb.add_css_class ("bar-content");
 
       cb.set_start_widget (new BarLeft (monitor));
       cb.set_center_widget (new BarCenter ());

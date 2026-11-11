@@ -5,7 +5,7 @@ namespace Topbar {
 
   private class BtDeviceBox : Box {
     public BtDeviceBox (string device_name = "", string icon_name = "") {
-      Object (spacing: device_name == "" ? 0 : 8);
+      Object (spacing: device_name == "" ? 0 : 4);
       append (new Image.from_icon_name (icon_name));
       append (new Label (device_name));
     }
@@ -33,14 +33,14 @@ namespace Topbar {
 
     private void render (BluetoothService bt) {
       remove_all_children ();
-      if (!bt.powered)append (new BtDeviceBox ("", "bluetooth-disabled-symbolic"));
-      else if (bt.devices.size == 0)append (new BtDeviceBox ("", "bluetooth-active-symbolic"));
+      if (!bt.powered)append (new BtDeviceBox ("", "topbar-bluetooth-disabled-symbolic"));
+      else if (bt.devices.size == 0)append (new BtDeviceBox ("", "topbar-bluetooth-active-symbolic"));
       else {
         foreach (var device in bt.devices.values) {
-          append (new BtDeviceBox (device.name, device.icon));
+          append (new BtDeviceBox (device.name, "topbar-bluetooth-connected-symbolic"));
         }
       }
-      spacing = bt.devices.size == 0 ? 0 : 8;
+      spacing = bt.devices.size == 0 ? 0 : 4;
     }
 
     private void remove_all_children () {
@@ -55,18 +55,18 @@ namespace Topbar {
   private class Volume : Box {
 
     public class Volume () {
-      Object (spacing: 8, tooltip_text: "Scroll to change volume\nLeft Click to toggle mute");
+      Object (spacing: 4, tooltip_text: "Scroll to change volume\nLeft Click to toggle mute");
       set_css_classes ({ "bar-section", "volume" });
 
       var volume = VolumeService.get_default ();
 
-      var icon = new Image.from_icon_name (volume.icon_name);
+      var icon = new Image.from_icon_name ("topbar-" + volume.icon_name);
       var label = new Label (@"$(volume.level)%");
       append (icon);
       append (label);
 
       volume.updated.connect ((level, icon_name) => {
-        icon.icon_name = icon_name;
+        icon.icon_name = "topbar-" + icon_name;
         label.label = @"$(level)%";
       });
 
@@ -90,19 +90,19 @@ namespace Topbar {
     Label label;
 
     public Wifi () {
-      Object (spacing: 8, tooltip_text: "Click to open NetworkManager TUI");
+      Object (spacing: 4, tooltip_text: "Click to open NetworkManager TUI");
       set_css_classes ({ "bar-section", "network" });
 
       var wifi = WifiService.get_default ();
 
-      icon = new Image.from_icon_name (wifi.icon_name);
+      icon = new Image.from_icon_name ("topbar-" + wifi.icon_name);
       label = new Label (wifi.ssid);
 
       append (icon);
       append (label);
 
       wifi.updated.connect (() => {
-        icon.icon_name = wifi.icon_name;
+        icon.icon_name = "topbar-" + wifi.icon_name;
         label.label = wifi.ssid;
       });
 
@@ -137,7 +137,7 @@ namespace Topbar {
     }
 
     private void update (BatteryService battery) {
-      icon.set_from_icon_name (battery.battery_icon_name);
+      icon.set_from_icon_name ("topbar-" + battery.battery_icon_name);
       label.set_text ("%d%%".printf (battery.percentage));
     }
   }
@@ -147,7 +147,7 @@ namespace Topbar {
     public PowerMenu () {
       set_css_classes ({ "bar-section", "power" });
       set_tooltip_text ("Click to open Power Menu");
-      child = new Image.from_icon_name ("system-shutdown-symbolic");
+      child = new Image.from_icon_name ("topbar-system-shutdown-symbolic");
       clicked.connect (Utils.launch_power_menu);
     }
   }
@@ -155,7 +155,7 @@ namespace Topbar {
   public class BarRight : Gtk.Box {
 
     public BarRight () {
-      Object (spacing: 8);
+      Object (spacing: 16);
       append (new Bluetooth ());
       append (new Volume ());
       append (new Wifi ());

@@ -23,6 +23,8 @@ namespace Topbar {
       // Initialize services early
       VolumeOSDIpc.get_default ();
 
+      IconTheme.get_for_display (Display.get_default ()).add_resource_path (
+        "/com/github/dikesh/topbar/icons");
       load_css ();
     }
 

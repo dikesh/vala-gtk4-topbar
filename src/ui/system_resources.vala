@@ -6,7 +6,7 @@ namespace Topbar {
   private class CPU : Box {
 
     public CPU () {
-      Object (spacing: 8);
+      Object (spacing: 4);
       set_css_classes ({ "system-resource-widget" });
 
       var cpu = CPUService.get_default ();
@@ -14,7 +14,7 @@ namespace Topbar {
       var cpu_usage = new Label (cpu.avg_cpu);
       cpu.updated.connect (() => { cpu_usage.label = cpu.avg_cpu; });
 
-      append (new Label ("󰌢"));
+      append (new Image.from_icon_name ("topbar-cpu-symbolic"));
       append (cpu_usage);
     }
   }
@@ -23,7 +23,7 @@ namespace Topbar {
   private class RAM : Box {
 
     public RAM () {
-      Object (spacing: 8);
+      Object (spacing: 4);
       set_css_classes ({ "system-resource-widget" });
 
       var memory = MemoryService.get_default ();
@@ -35,7 +35,7 @@ namespace Topbar {
         set_tooltip_text (get_tooltip (memory));
       });
 
-      append (new Label ("󰍛"));
+      append (new Image.from_icon_name ("topbar-memory-symbolic"));
       append (mem_usage);
     }
 
@@ -48,7 +48,7 @@ namespace Topbar {
   private class Temperature : Box {
 
     public Temperature () {
-      Object (spacing: 8);
+      Object (spacing: 4);
       set_css_classes ({ "system-resource-widget" });
 
       var cpu_temp = TemperatureService.get_default ();
@@ -58,7 +58,7 @@ namespace Topbar {
         cpu_temp_widget.label = "%d°C".printf ((int) cpu_temp.temp_c);
       });
 
-      append (new Label (""));
+      append (new Image.from_icon_name ("topbar-temperature-symbolic"));
       append (cpu_temp_widget);
     }
   }
@@ -67,7 +67,7 @@ namespace Topbar {
   private class DiskUsage : Box {
 
     public DiskUsage () {
-      Object (spacing: 8);
+      Object (spacing: 4);
       set_css_classes ({ "system-resource-widget" });
 
       var disk_service = DiskService.get_default ();
@@ -79,7 +79,7 @@ namespace Topbar {
         set_tooltip_text (get_tooltip (disk_service));
       });
 
-      append (new Label ("󰍛"));
+      append (new Image.from_icon_name ("topbar-disk-symbolic"));
       append (root_usage);
     }
 
@@ -92,7 +92,7 @@ namespace Topbar {
   public class SystemResources : Gtk.Box {
 
     public SystemResources () {
-      Object (spacing: 8);
+      Object (spacing: 16);
       set_css_classes ({ "bar-section" });
 
       // Append widgets
