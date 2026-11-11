@@ -116,10 +116,10 @@ namespace Topbar {
 
   [DBus (name = "org.kde.StatusNotifierItem")]
   internal interface IItem : DBusProxy {
-    public abstract void ContexMenu (int x, int y) throws DBusError, IOError;
-    public abstract void Activate (int x, int y) throws DBusError, IOError;
-    public abstract void SecondaryActivate (int x, int y) throws DBusError, IOError;
-    public abstract void Scroll (int delta, string orientation) throws DBusError, IOError;
+    public abstract async void ContextMenu (int x, int y) throws DBusError, IOError;
+    public abstract async void Activate (int x, int y) throws DBusError, IOError;
+    public abstract async void SecondaryActivate (int x, int y) throws DBusError, IOError;
+    public abstract async void Scroll (int delta, string orientation) throws DBusError, IOError;
 
     public signal void NewTitle ();
     public signal void NewIcon ();
@@ -133,6 +133,12 @@ namespace Topbar {
   public class TrayItem : Object {
     private IItem proxy;
     private bool needs_update = false;
+    private bool stopped;
+    private Cancellable cancellable = new Cancellable ();
+    private uint refresh_source;
+    private ulong signal_handler;
+    private ulong properties_handler;
+    private ulong owner_handler;
     private static HashMap<string, string ?> icon_path_cache = new HashMap<string, string ?> ();
 
     /** The Title of the TrayItem */
@@ -151,28 +157,13 @@ namespace Topbar {
      * Show the context menu for this tray item.
      */
     public async void show_context_menu (int x, int y) {
-      if (menu_path == null)return;
-
+      if (stopped || proxy == null || menu != null)
+        return;
       try {
-        // First try the StatusNotifierItem ContextMenu method
-        proxy.ContexMenu (x, y);
-      } catch (Error e) {
-        // If that fails, try opening the menu at root (id=0)
-        try {
-          var bus = yield Bus.get (BusType.SESSION);
-
-          yield bus.call (proxy.g_name_owner,
-                          menu_path,
-                          "com.canonical.dbusmenu",
-                          "Event",
-                          new Variant ("(isvu)", 0, "opened", new Variant ("i", 0), 0u),
-                          null,
-                          DBusCallFlags.NONE,
-                          -1,
-                          null);
-        } catch (Error e2) {
-          warning ("Failed to show context menu: %s", e2.message);
-        }
+        yield proxy.ContextMenu (x, y);
+      } catch (Error error) {
+        if (!stopped)
+          warning ("Failed to show tray context menu: %s", error.message);
       }
     }
 
@@ -267,29 +258,8 @@ namespace Topbar {
     /** The object path to the dbusmenu */
     public ObjectPath menu_path { get; private set; }
 
-    private DBusMenuModel ? dbus_menu_model;
-    private SimpleActionGroup ? dbus_action_group;
-
-    /**
-     * The MenuModel describing the menu for this TrayItem to be used with a MenuButton or PopoverMenu.
-     * The actions for this menu are defined in [property@TrayService.TrayItem:action-group].
-     */
-    public MenuModel ? menu_model {
-      owned get {
-        return dbus_menu_model;
-      }
-    }
-
-    /**
-     * The ActionGroup containing the actions for the menu. All actions have the `dbusmenu` prefix and are
-     * setup to work with the [property@TrayService.TrayItem:menu-model]. Make sure to insert this action group
-     * into a parent widget of the menu, eg the MenuButton for which the MenuModel for this TrayItem is set.
-     */
-    public ActionGroup ? action_group {
-      owned get {
-        return dbus_action_group;
-      }
-    }
+    /** The locally translated com.canonical.dbusmenu, if exported by the item. */
+    public TrayMenu? menu { get; private set; }
 
     public signal void changed ();
     public signal void ready ();
@@ -301,18 +271,57 @@ namespace Topbar {
 
     private async void setup_proxy (string service, string path) {
       try {
-        proxy = yield Bus.get_proxy (BusType.SESSION,
-                                     service,
-                                     path);
-
-        proxy.g_signal.connect (handle_signal);
-
+        var item_proxy = yield Bus.get_proxy<IItem> (
+          BusType.SESSION, service, path, DBusProxyFlags.NONE, cancellable);
+        if (stopped)
+          return;
+        proxy = item_proxy;
+        signal_handler = proxy.g_signal.connect (handle_signal);
+        properties_handler = proxy.g_properties_changed.connect (() => queue_refresh ());
+        owner_handler = proxy.notify["g-name-owner"].connect (() => {
+          if (menu != null) {
+            menu.stop ();
+            menu = null;
+          }
+          // A replacement owner must get a fresh menu even at the same path.
+          menu_path = (ObjectPath) "/";
+          queue_refresh ();
+        });
         yield refresh_all_properties ();
-
-        ready ();
-      } catch (Error err) {
-        critical (err.message);
+        if (!stopped)
+          ready ();
+      } catch (Error error) {
+        if (!stopped)
+          warning ("Failed to initialize tray item: %s", error.message);
       }
+    }
+
+    internal void stop () {
+      if (stopped)
+        return;
+      stopped = true;
+      cancellable.cancel ();
+      if (refresh_source != 0) {
+        Source.remove (refresh_source);
+        refresh_source = 0;
+      }
+      if (proxy != null) {
+        if (signal_handler != 0)
+          proxy.disconnect (signal_handler);
+        if (properties_handler != 0)
+          proxy.disconnect (properties_handler);
+        if (owner_handler != 0)
+          proxy.disconnect (owner_handler);
+      }
+      if (menu != null) {
+        menu.stop ();
+        menu = null;
+      }
+    }
+
+    protected override void dispose () {
+      stop ();
+      base.dispose ();
     }
 
     private void update_gicon () {
@@ -339,11 +348,19 @@ namespace Topbar {
 
     private void handle_signal (DBusProxy proxy, string ? sender_name, string signal_name,
                                 Variant parameters) {
-      if (needs_update)return;
+      queue_refresh ();
+    }
+
+    private void queue_refresh () {
+      if (stopped || needs_update)
+        return;
       needs_update = true;
-      Timeout.add_once (10, () => {
+      refresh_source = Timeout.add (10, () => {
+        refresh_source = 0;
         needs_update = false;
-        refresh_all_properties.begin ();
+        if (!stopped)
+          refresh_all_properties.begin ();
+        return Source.REMOVE;
       });
     }
 
@@ -403,30 +420,12 @@ namespace Topbar {
 
             var new_menu_path = (ObjectPath) prop_value.get_string ();
             if (new_menu_path != menu_path) {
+              if (menu != null)
+                menu.stop ();
               menu_path = new_menu_path;
-
-              if (menu_path != null && menu_path != "/") {
-                try {
-                  var connection = Bus.get_sync (BusType.SESSION);
-                  dbus_menu_model = DBusMenuModel.@get (
-                    connection,
-                    proxy.g_name_owner,
-                    menu_path
-                  );
-                } catch (Error e) {
-                  warning ("Failed to get menu model: %s", e.message);
-                }
-
-                dbus_action_group = new SimpleActionGroup ();
-
-                notify_property ("menu-model");
-                notify_property ("action-group");
-              } else {
-                dbus_menu_model = null;
-                dbus_action_group = null;
-                notify_property ("menu-model");
-                notify_property ("action-group");
-              }
+              menu = menu_path != "/" && proxy.g_name_owner != null
+                ? new TrayMenu (proxy.g_connection, proxy.g_name_owner, menu_path)
+                : null;
             }
             break;
           }
@@ -482,9 +481,12 @@ namespace Topbar {
     }
 
     private async void refresh_all_properties () {
+      if (stopped || proxy == null || proxy.g_name_owner == null)
+        return;
+      string owner = proxy.g_name_owner;
       this.freeze_notify ();
       try {
-        Variant parameters = yield proxy.g_connection.call (proxy.g_name,
+        Variant parameters = yield proxy.g_connection.call (owner,
                                                             proxy.g_object_path,
                                                             "org.freedesktop.DBus.Properties",
                                                             "GetAll",
@@ -493,7 +495,11 @@ namespace Topbar {
                                                             new VariantType("(a{sv})"),
                                                             DBusCallFlags.NONE,
                                                             -1,
-                                                            null);
+                                                            cancellable);
+        if (stopped || proxy.g_name_owner != owner) {
+          this.thaw_notify ();
+          return;
+        }
 
         VariantIter prop_iter;
         parameters.get ("(a{sv})", out prop_iter);
@@ -505,60 +511,45 @@ namespace Topbar {
           set_dbus_property (prop_key, prop_value);
         }
       } catch (Error e) {
-        // silently ignode
+        if (!stopped && !(e is IOError.CANCELLED))
+          warning ("Failed to refresh tray item: %s", e.message);
       }
       this.thaw_notify ();
-      this.changed ();
+      if (!stopped)
+        this.changed ();
     }
 
-    /**
-     * tells the tray app that its menu is about to be opened,
-     * so it can update the menu if needed. You should call this method
-     * before openening the menu.
-     */
-    public async void about_to_show () {
-      if (menu_path == null)return;
-      try {
-        var bus = yield Bus.get (BusType.SESSION);
-
-        yield bus.call (this.proxy.g_name_owner,
-                        menu_path,
-                        "com.canonical.dbusmenu",
-                        "AboutToShow",
-                        new Variant ("(i)", 0),
-                        null,
-                        DBusCallFlags.NONE,
-                        -1,
-                        null);
-      } catch (Error r) {
-        // silently ignore
-      }
-    }
 
     /**
      * Send an activate request to the tray app.
      */
     public void activate (int x, int y) {
-      try {
-        proxy.Activate (x, y);
-      } catch (Error e) {
-        if ((e.domain != DBusError.quark ()) || (e.code != DBusError.UNKNOWN_METHOD)) {
-          warning (e.message);
+      if (stopped || proxy == null)
+        return;
+      proxy.Activate.begin (x, y, (obj, result) => {
+        try {
+          proxy.Activate.end (result);
+        } catch (Error error) {
+          if (!stopped && !error.matches (DBusError.quark (), DBusError.UNKNOWN_METHOD))
+            warning ("Failed to activate tray item: %s", error.message);
         }
-      }
+      });
     }
 
     /**
      * Send a secondary activate request to the tray app.
      */
     public void secondary_activate (int x, int y) {
-      try {
-        proxy.SecondaryActivate (x, y);
-      } catch (Error e) {
-        if ((e.domain != DBusError.quark ()) || (e.code != DBusError.UNKNOWN_METHOD)) {
-          warning (e.message);
+      if (stopped || proxy == null)
+        return;
+      proxy.SecondaryActivate.begin (x, y, (obj, result) => {
+        try {
+          proxy.SecondaryActivate.end (result);
+        } catch (Error error) {
+          if (!stopped && !error.matches (DBusError.quark (), DBusError.UNKNOWN_METHOD))
+            warning ("Failed to secondary activate tray item: %s", error.message);
         }
-      }
+      });
     }
 
     /**
@@ -566,13 +557,16 @@ namespace Topbar {
      * valid values for the orientation are "horizontal" and "vertical".
      */
     public void scroll (int delta, string orientation) {
-      try {
-        proxy.Scroll (delta, orientation);
-      } catch (Error e) {
-        if ((e.domain != DBusError.quark ()) || (e.code != DBusError.UNKNOWN_METHOD)) {
-          warning ("%s\n", e.message);
+      if (stopped || proxy == null)
+        return;
+      proxy.Scroll.begin (delta, orientation, (obj, result) => {
+        try {
+          proxy.Scroll.end (result);
+        } catch (Error error) {
+          if (!stopped && !error.matches (DBusError.quark (), DBusError.UNKNOWN_METHOD))
+            warning ("Failed to scroll tray item: %s", error.message);
         }
-      }
+      });
     }
 
     private string ? find_icon_in_theme (string icon_name, string theme_path) {
@@ -884,6 +878,7 @@ namespace Topbar {
 
         proxy.notify["g-name-owner"].connect (() => {
           foreach (var entry in _items.entries) {
+            entry.value.stop ();
             item_removed (entry.key);
           }
 
@@ -970,9 +965,17 @@ namespace Topbar {
       // Add to items immediately to prevent duplicate registration
       _items[service] = item;
 
-      item.ready.connect (() => {
-        _items_store.append (item);
-        item_added (service);
+      weak TrayService owner = this;
+      weak TrayItem registered_item = item;
+      ulong ready_handler = 0;
+      ready_handler = item.ready.connect (() => {
+        if (owner == null || registered_item == null)
+          return;
+        registered_item.disconnect (ready_handler);
+        if (owner._items[service] != registered_item)
+          return;
+        owner._items_store.append (registered_item);
+        owner.item_added (service);
       });
     }
 
@@ -980,6 +983,7 @@ namespace Topbar {
       var item = _items[service];
       if (item == null)return;
 
+      item.stop ();
       _items.unset (service);
 
       // Only try to remove from store if item exists in it

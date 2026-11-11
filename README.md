@@ -4,7 +4,7 @@ A lightweight, feature-rich status bar for the [Niri](https://github.com/YaLTeR/
 
 ## Appearance
 
-Catppuccin Mocha colors with mauve accents, a cyan active-workspace highlight, rounded pills, and a transparent background.
+Catppuccin Mocha colors with mauve accents, outlined active workspaces, rounded pills, and a transparent background.
 
 To customize the appearance, edit `assets/style.scss`, then rebuild and restart. Status icons are bundled; their license is in `assets/icons/LICENSE`.
 
@@ -35,7 +35,7 @@ To customize the appearance, edit `assets/style.scss`, then rebuild and restart.
 - **Wi-Fi** — Shows connected SSID and signal icon.
   - Click to open the NetworkManager text UI (`nmtui`)
 - **Battery** — Shows charge percentage and charging, plugged-in, or discharging state.
-- **System Tray** — SNI (StatusNotifierItem) tray icon support.
+- **System Tray** — SNI (StatusNotifierItem) icons with right-click menus and submenus.
 - **Power Menu** — Button to open the power menu.
 
 ### OSD
@@ -126,7 +126,6 @@ Topbar automatically creates one bar per connected monitor and handles hotplug e
 topbar/
 ├── assets/
 │   ├── style.scss              # Bar stylesheet (compiled to CSS at build time)
-│   ├── kitty-custom.svg        # Custom Kitty terminal icon
 │   └── topbar.gresource.xml    # GResource manifest
 ├── src/
 │   ├── main.vala               # Entry point

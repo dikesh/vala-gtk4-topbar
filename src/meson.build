@@ -66,6 +66,7 @@ executable(
     'services/volume.vala',
     'services/bluetooth.vala',
     'services/tray.vala',
+    'services/tray_menu.vala',
 
     resources
   ],

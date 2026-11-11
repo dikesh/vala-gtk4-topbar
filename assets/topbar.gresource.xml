@@ -2,7 +2,6 @@
 <gresources>
   <gresource prefix="/com/github/dikesh/topbar">
     <file>style.css</file>
-    <file>kitty-custom.svg</file>
     <file>icons/LICENSE</file>
     <file alias="icons/scalable/status/topbar-cpu-symbolic.svg">icons/brand-speedtest.svg</file>
     <file alias="icons/scalable/status/topbar-memory-symbolic.svg">icons/cpu.svg</file>

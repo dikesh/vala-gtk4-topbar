@@ -9,9 +9,9 @@ $overlay0: #6c7086;
 $blue: #89b4fa;
 $mauve: #cba6f7;
 $cyan: #89dceb;
-$capsule-border: #51466a;
+$capsule-border: $surface1;
 $workspace-border: #4c4f69;
-$icon: #d1abfd;
+$icon: $mauve;
 
 .bar-container {
   background: transparent;
@@ -90,9 +90,7 @@ $icon: #d1abfd;
 
   .hl-workspace-active {
     padding: 0 5px;
-    background: $cyan;
-    border-color: $cyan;
-    border-radius: 3px;
+    border-color: $mauve;
   }
 
   .tray-item {
@@ -112,12 +110,113 @@ $icon: #d1abfd;
     box-shadow: 0 4px 12px rgba($crust, 0.5);
   }
 
-  .traymenu modelbutton {
-    padding: 8px;
-    border-radius: 4px;
+  // Nested GtkPopoverMenu popovers inherit this scope from the root menu.
+  .traymenu {
+    font-family: sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: $text;
 
-    &:hover {
+    * {
+      font-family: sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    & > contents,
+    popover > contents {
       background: $surface0;
+      color: $text;
+      border: 1px solid $surface1;
+      border-radius: 6px;
+      padding: 4px;
+      box-shadow: 0 4px 12px rgba($crust, 0.5);
+    }
+
+    modelbutton {
+      min-height: 24px;
+      min-width: 190px;
+      padding: 3px 10px;
+      border-radius: 3px;
+      color: $text;
+
+      label,
+      image,
+      check,
+      radio,
+      arrow {
+        color: inherit;
+      }
+
+      &:hover,
+      &:focus,
+      &:selected {
+        background: $cyan;
+        color: $base;
+      }
+
+      &:disabled {
+        background: transparent;
+        color: $overlay0;
+      }
+    }
+
+    label {
+      color: inherit;
+      padding: 0;
+      margin: 0;
+    }
+
+    image {
+      color: inherit;
+      -gtk-icon-size: 16px;
+      min-width: 16px;
+      min-height: 16px;
+      margin-right: 6px;
+    }
+
+    separator {
+      min-height: 1px;
+      margin: 4px 8px;
+      background: $surface1;
+    }
+
+    check,
+    radio {
+      min-width: 12px;
+      min-height: 12px;
+      margin-right: 8px;
+      border: 1px solid currentColor;
+      border-radius: 2px;
+      color: inherit;
+      -gtk-icon-size: 12px;
+    }
+
+    radio {
+      border-radius: 999px;
+    }
+
+    check:checked {
+      -gtk-icon-source: -gtk-icontheme("object-select-symbolic");
+    }
+
+    radio:checked {
+      -gtk-icon-source: -gtk-icontheme("media-record-symbolic");
+    }
+
+    arrow {
+      min-width: 12px;
+      min-height: 12px;
+      margin-left: 12px;
+      color: inherit;
+      -gtk-icon-size: 12px;
+      -gtk-icon-source: -gtk-icontheme("pan-end-symbolic");
+
+      &.left,
+      &:dir(rtl) {
+        -gtk-icon-source: -gtk-icontheme("pan-start-symbolic");
+      }
     }
   }
 

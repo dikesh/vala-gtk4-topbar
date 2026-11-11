@@ -16,7 +16,14 @@ namespace Topbar {
 
       var icon_name = window.app_id.ascii_down ();
       if (icon_name == "kitty") {
-        append (new Image.from_resource ("/com/github/dikesh/topbar/kitty-custom.svg"));
+        // Use the theme's full Kitty artwork, not its simplified small-size variant.
+        var theme = IconTheme.get_for_display (Gdk.Display.get_default ());
+        var artwork = theme.lookup_icon ("kitty", null, 64, 1,
+                                         TextDirection.NONE, IconLookupFlags.FORCE_REGULAR);
+        var file = artwork.get_file ();
+        append (file != null
+                ? new Image.from_gicon (new FileIcon (file))
+                : new Image.from_icon_name ("kitty"));
       } else {
         if (icon_name == "org.gnome.nautilus")icon_name = "nautilus";
         else if ("emacs" in icon_name)icon_name = "emacs";
