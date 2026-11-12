@@ -94,6 +94,7 @@ namespace Topbar {
     public SystemResources () {
       Object (spacing: 16);
       set_css_classes ({ "bar-section" });
+      set_cursor_from_name ("pointer");
 
       // Append widgets
       append (new CPU ());

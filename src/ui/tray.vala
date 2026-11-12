@@ -44,6 +44,7 @@ namespace Topbar {
 
       button = new Button ();
       button.add_css_class ("tray-item");
+      button.set_cursor_from_name ("pointer");
       button.clicked.connect (on_left_click);
       button.set_child (image);
 
@@ -144,6 +145,7 @@ namespace Topbar {
 
         popover = new PopoverMenu.from_model_full (menu.menu_model, PopoverMenuFlags.NESTED);
         popover.add_css_class ("traymenu");
+        popover.set_cursor_from_name ("default");
         popover.insert_action_group ("dbusmenu", menu.action_group);
         popover.set_has_arrow (false);
         popover.set_position (PositionType.BOTTOM);

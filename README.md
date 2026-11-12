@@ -4,7 +4,7 @@ A lightweight, feature-rich status bar for the [Niri](https://github.com/YaLTeR/
 
 ## Appearance
 
-Catppuccin Mocha colors with mauve accents, outlined active workspaces, rounded pills, and a transparent background.
+Catppuccin Mocha colors with mauve accents, outlined active workspaces, rounded pills, a transparent background, and hand cursors on clickable controls.
 
 To customize the appearance, edit `assets/style.scss`, then rebuild and restart. Status icons are bundled; their license is in `assets/icons/LICENSE`.
 

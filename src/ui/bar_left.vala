@@ -8,6 +8,7 @@ namespace Topbar {
     public Apps () {
       Object (tooltip_text: "Apps Menu");
       set_css_classes ({ "bar-section", "apps" });
+      set_cursor_from_name ("pointer");
       child = new Image.from_icon_name ("topbar-apps-symbolic");
       clicked.connect (Utils.launch_apps);
     }
@@ -18,6 +19,7 @@ namespace Topbar {
 
     public ColorPicker () {
       set_css_classes ({ "bar-section", "apps" });
+      set_cursor_from_name ("pointer");
       set_tooltip_text ("Color Picker");
       child = new Image.from_icon_name ("topbar-color-picker-symbolic");
       clicked.connect (Utils.launch_color_picker);
@@ -32,6 +34,7 @@ namespace Topbar {
 
     public ScreenRec () {
       set_css_classes ({ "bar-section", "screenrec" });
+      set_cursor_from_name ("pointer");
       set_tooltip_text ("Screen Recorder");
       // Get recording service
       var rec_service = ScreenRecordService.get_default ();
@@ -59,6 +62,7 @@ namespace Topbar {
       var btn = new Button () {
         css_classes = { "bar-section", "apps" }, tooltip_text = "Click to show / hide tools"
       };
+      btn.set_cursor_from_name ("pointer");
       btn.child = new Image.from_icon_name ("topbar-tools-symbolic");
 
       btn.clicked.connect (() => {

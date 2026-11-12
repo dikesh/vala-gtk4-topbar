@@ -65,6 +65,7 @@ namespace Topbar {
       var dt_service = DateTimeService.get_default ();
 
       var time_button = new Button.with_label (dt_service.current_time);
+      time_button.set_cursor_from_name ("pointer");
       append (time_button);
 
       dt_service.time_updated.connect (time => time_button.set_label (time));
@@ -84,6 +85,7 @@ namespace Topbar {
       var dt_service = DateTimeService.get_default ();
 
       var date_button = new Button.with_label (dt_service.current_date);
+      date_button.set_cursor_from_name ("pointer");
       append (date_button);
 
       // Update date button label

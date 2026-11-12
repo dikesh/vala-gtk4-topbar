@@ -192,6 +192,7 @@ namespace Topbar {
         var gesture = new GestureLongPress ();
         gesture.pressed.connect (() => niri.toggle_overview ());
         add_controller (gesture);
+        set_cursor_from_name ("pointer");
 
         // Seed from cached IPC state. On display reconnect this widget is
         // created after Niri has already sent its initial event dump, so no

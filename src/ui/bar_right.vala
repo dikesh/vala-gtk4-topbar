@@ -16,6 +16,7 @@ namespace Topbar {
     public class Bluetooth () {
       set_tooltip_text ("Left click to open launcher\nRight click to toggle power");
       set_css_classes ({ "bar-section", "bluetooth" });
+      set_cursor_from_name ("pointer");
 
       var bt = BluetoothService.get_default ();
       bt.updated.connect (() => render (bt));
@@ -57,6 +58,7 @@ namespace Topbar {
     public class Volume () {
       Object (spacing: 4, tooltip_text: "Scroll to change volume\nLeft Click to toggle mute");
       set_css_classes ({ "bar-section", "volume" });
+      set_cursor_from_name ("pointer");
 
       var volume = VolumeService.get_default ();
 
@@ -92,6 +94,7 @@ namespace Topbar {
     public Wifi () {
       Object (spacing: 4, tooltip_text: "Click to open NetworkManager TUI");
       set_css_classes ({ "bar-section", "network" });
+      set_cursor_from_name ("pointer");
 
       var wifi = WifiService.get_default ();
 
@@ -146,6 +149,7 @@ namespace Topbar {
 
     public PowerMenu () {
       set_css_classes ({ "bar-section", "power" });
+      set_cursor_from_name ("pointer");
       set_tooltip_text ("Click to open Power Menu");
       child = new Image.from_icon_name ("topbar-system-shutdown-symbolic");
       clicked.connect (Utils.launch_power_menu);
