@@ -13,8 +13,9 @@ To customize the appearance, edit `assets/style.scss`, then rebuild and restart.
 ### Left Section
 - **System Resources** — Live CPU usage, RAM usage, CPU temperature, and disk usage. Click to open `btop`.
 - **Apps** — Launcher button to open the application menu.
-- **Tools** — Collapsible toolbar with:
+- **Tools** — Collapsible grouped toolbar with:
   - Screen Recorder toggle
+  - Screenshot menu — Screen or Region capture via the fish function `xscreenshot` (requires `grim`, `slurp`, and `satty`)
   - Color Picker
 - **Niri Workspaces** — Per-monitor workspace indicators showing open windows with app icons. Supports:
   - Left-click to focus a workspace

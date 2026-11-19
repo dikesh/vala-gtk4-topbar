@@ -51,9 +51,23 @@ $icon: $mauve;
     padding: 0 7px;
 
     &.power,
-    &.screenrec,
     &.apps {
       min-width: 16px;
+    }
+  }
+
+  .tools {
+    padding: 0 4px;
+
+    .tool-button {
+      min-width: 16px;
+      min-height: 24px;
+      padding: 0 3px;
+      border-radius: 999px;
+
+      &:hover {
+        background: rgba($text, 0.1);
+      }
     }
   }
 
@@ -109,7 +123,8 @@ $icon: $mauve;
     box-shadow: 0 4px 12px rgba($crust, 0.5);
   }
 
-  // Nested GtkPopoverMenu popovers inherit this scope from the root menu.
+  // Tool menus share the tray menu's palette and row styling.
+  .toolmenu,
   .traymenu {
     font-family: sans-serif;
     font-size: 13px;
@@ -123,11 +138,9 @@ $icon: $mauve;
       letter-spacing: 0;
     }
 
-    // Preserve an edge gap even when the compositor constrains the popup.
-    & > contents {
+    &.traymenu > contents {
       margin-right: 12px;
     }
-
     & > contents,
     popover > contents {
       background: $surface0;
